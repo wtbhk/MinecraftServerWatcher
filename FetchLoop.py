@@ -2,8 +2,8 @@ from FetchQueen import FetchQueen
 from ServerInfo import ServerInfo
 from ServerStatus import ServerStatus
 import redis
-import threading
 import time
+import thread
 
 class FetchLoop:
 	def __init__(self):
@@ -12,20 +12,21 @@ class FetchLoop:
 	def setDelay(delay, self):
 		self.delay = delay
 	def startLoop(self):
-		fetchThread = DoFetch()
-		fetchThread.start()
+		thread.start_new_thread(doFetch)
+		thread.start_new_thread(putServersIntoQueen, (self.delay))
 
-class DoFetch(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
-	def run(self):
-		fetchQueen = FetchQueen()
-		while True:
-			server = fetchQueen.blpop()
-			server = ServerStatus(server.info()['addr'], server.info()['port']).get()
-			server.save()
+def doFetch(self):
+	fetchQueen = FetchQueen()
+	while True:
+		server = fetchQueen.blpop()
+		server = ServerStatus(server.info()['addr'], server.info()['port']).get()
+		server.save()
 
-
-def putServersIntoQueen():
-	r = redis.Redis()
-	#TODO
+def putServersIntoQueen(delay):
+	while True:
+		r = redis.Redis()
+		server_list = r.smembers('ServerList')
+		for i in server_list:
+			fetchQueen = FetchQueen()
+			fetchQueen.rpush(ServerInfo(i))
+		time.sleep(delay)

@@ -12,9 +12,12 @@ class ServerInfo:
 		}
 		if isinstance(addr, dict):
 			self.setFields(addr)
-		else:
-			self.fields['addr'] = addr
-			self.fields['port'] = port
+			return
+		elif strspn(addr,':'):
+			port = int(addr.split(':')[1])
+			addr = addr.split(':')[0]
+		self.fields['addr'] = addr
+		self.fields['port'] = port
 
 	def setFields(fields, self):
 		for i in fields:
@@ -28,5 +31,6 @@ class ServerInfo:
 		redis_key = self.fields['addr'] + ':' + self.fields['port']
 		r = redis.Redis()
 		r.hmset(redis_key, self.fields)
+		r.sadd('ServerList', redis_key)
 	def toDict(self):
 		return self.fields
