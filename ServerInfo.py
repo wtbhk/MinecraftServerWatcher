@@ -1,7 +1,7 @@
 import redis
 
 class ServerInfo:
-	def __init__(addr, port=25565, self):
+	def __init__(*args, self):
 		self.fields = {
 			'addr' : '',
 			'port' : '',
@@ -10,12 +10,19 @@ class ServerInfo:
 			'max' : '',
 			'available' : ''
 		}
-		if isinstance(addr, dict):
-			self.setFields(addr)
+		if isinstance(args[0], dict):
+			self.setFields(args[0])
 			return
-		elif strspn(addr,':'):
-			port = int(addr.split(':')[1])
-			addr = addr.split(':')[0]
+		if len(args) == 1:
+			if strspn(args[0],':'):
+				port = int(addr.split(':')[1])
+				addr = addr.split(':')[0]
+			else:
+				addr = args[0]
+				port = 25565
+		elif len(args) == 2:
+			addr = args[0]
+			port = int(args[1])
 		self.fields['addr'] = addr
 		self.fields['port'] = port
 

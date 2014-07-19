@@ -2,9 +2,9 @@ import socket
 from ServerInfo import ServerInfo
 
 class ServerStatus:
-	def __init__(host='127.0.0.1', port=25565, self):
-		self.host = host
-		self.port = int(port)
+	def __init__(*args, self):
+		self.port = 25565 if len(args)==1 else int(args[1])
+		self.host = args[0]
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.connect()
 
