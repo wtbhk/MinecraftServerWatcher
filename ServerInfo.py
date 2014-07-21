@@ -1,7 +1,7 @@
 import redis
 
 class ServerInfo:
-	def __init__(*args, self):
+	def __init__(self, *args):
 		self.fields = {
 			'addr' : '',
 			'port' : '',
@@ -26,7 +26,7 @@ class ServerInfo:
 		self.fields['addr'] = addr
 		self.fields['port'] = port
 
-	def setFields(fields, self):
+	def setFields(self, fields):
 		for i in fields:
 			if i in self.fields:
 				self.fields[i] = fields[i]

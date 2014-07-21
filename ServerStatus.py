@@ -2,7 +2,7 @@ import socket
 from ServerInfo import ServerInfo
 
 class ServerStatus:
-	def __init__(*args, self):
+	def __init__(self, *args):
 		self.port = 25565 if len(args)==1 else int(args[1])
 		self.host = args[0]
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,7 +19,7 @@ class ServerStatus:
 		return True
 
 	def get(self):
-		if self.connected :
+		if self.connected:
 			s = self.s
 			s.sendall("\xfe")
 			data = s.recv(2048)
